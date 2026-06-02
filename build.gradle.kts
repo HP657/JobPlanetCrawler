@@ -61,5 +61,5 @@ tasks.withType<Test> {
 }
 
 tasks.bootJar {
-//	mainClass.set("com.datascience.jobplanetcrawler.JobplanetcrawlerApplicationKt")
+	mainClass.set("com.datascience.jobplanetcrawler.JobplanetcrawlerApplicationKt")
 }

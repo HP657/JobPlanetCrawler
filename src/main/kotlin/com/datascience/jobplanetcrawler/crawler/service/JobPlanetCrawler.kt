@@ -28,6 +28,12 @@ class JobPlanetCrawler(private val jobSaveService: JobSaveService) {
             addArguments("--disable-gpu")
             addArguments("--window-size=1920,1080")
             addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+
+            val prefs = mapOf(
+                "profile.managed_default_content_settings.images" to 2,
+                "profile.managed_default_content_settings.stylesheets" to 2
+            )
+            setExperimentalOption("prefs", prefs)
         }
 
         val driver = ChromeDriver(options)
