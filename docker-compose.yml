@@ -1,5 +1,4 @@
 services:
-  # 1. PostgreSQL 데이터베이스 서비스
   postgres-db:
     image: postgres:17-alpine
     container_name: local-postgres-db
@@ -12,20 +11,28 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 512M # DB에 할당할 최대 메모리
 
-  # 2. 스프링 부트 애플리케이션 서비스 (필요시 활성화)
-  # app-api:
-  #   build: .
-  #   container_name: jobplanet-api-server
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/jobplanet_db
-  #     SPRING_DATASOURCE_USERNAME: jobplanet_user
-  #     SPRING_DATASOURCE_PASSWORD: jobplanet_password
-  #   depends_on:
-  #     - postgres-db
-  #   restart: always
+  api:
+    build: .
+    container_name: jobplanet-api-server
+    ports:
+      - "8080:8080"
+    environment:
+      # 컨테이너끼리 통신할 때는 내부 포트인 5432 사용
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/jobplanet_crawler_db
+      SPRING_DATASOURCE_USERNAME: jobplanet_crawler_user
+      SPRING_DATASOURCE_PASSWORD: jobplanet_crawler_password
+    depends_on:
+      - postgres-db
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 1024m # 앱에 할당할 최대 메모리 (4GB 중 약 1.5GB만 사용)
 
 volumes:
   postgres_data:

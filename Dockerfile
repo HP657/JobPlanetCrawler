@@ -18,5 +18,5 @@ WORKDIR /app
 COPY --from=builder /apps/build/libs/*-SNAPSHOT.jar /app/application.jar
 
 # 컨테이너 실행 시 기본 실행 명령
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "/app/application.jar"]
+ENTRYPOINT ["java", "-Xmx850m", "-Xms256m", "-Dspring.profiles.active=prod", "-jar", "/app/application.jar"]
 EXPOSE 8080
