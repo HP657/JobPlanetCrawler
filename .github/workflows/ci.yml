@@ -36,8 +36,7 @@ jobs:
           context: .
           platforms: linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository_owner | lower }}/${{ github.event.repository.name }}/crawler:latest
-
+          tags: ghcr.io/${{ github.repository_owner.toLowerCase() }}/${{ github.event.repository.name.toLowerCase() }}/crawler:latest
       # 4. Tailscale 연결
       - name: Install Tailscale
         uses: tailscale/github-action@v2
