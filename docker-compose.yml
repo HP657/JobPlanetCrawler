@@ -17,7 +17,7 @@ services:
           memory: 512M # DB에 할당할 최대 메모리
 
   api:
-    build: .
+    image: ghcr.io/hp657/jobplanetcrawler/crawler:latest
     container_name: jobplanet-api-server
     ports:
       - "8080:8080"
