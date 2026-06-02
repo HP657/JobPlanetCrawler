@@ -22,6 +22,11 @@ class JobPlanetCrawler(private val jobSaveService: JobSaveService) {
     fun crawlDirectly() {
         WebDriverManager.chromedriver().setup()
         val options = ChromeOptions().apply {
+            addArguments("--headless=new") // 필수: 화면 없이 실행
+            addArguments("--no-sandbox")   // 필수: 리눅스 컨테이너 환경
+            addArguments("--disable-dev-shm-usage") // 필수: 메모리 효율화
+            addArguments("--disable-gpu")
+            addArguments("--window-size=1920,1080")
             addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
         }
 
