@@ -8,7 +8,7 @@ RUN gradle build -x test --no-daemon || true
 
 # 전체 소스 복사 및 빌드
 COPY src /apps/src
-RUN gradle bootJar -x test --no-daemon
+RUN gradle build -x test --no-daemon
 
 # 2단계: 실행 스테이지 (컴팩트한 JRE 환경)
 FROM eclipse-temurin:21-jre-jammy

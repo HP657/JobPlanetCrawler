@@ -59,3 +59,7 @@ allOpen {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+tasks.bootJar {
+//	mainClass.set("com.datascience.jobplanetcrawler.JobplanetcrawlerApplicationKt")
+}

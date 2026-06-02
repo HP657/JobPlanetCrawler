@@ -58,5 +58,5 @@ jobs:
           ssh ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "
             docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} &&
             docker pull ghcr.io/hp657/jobplanetcrawler/crawler:latest &&
-            docker-compose -f ${{ secrets.PI_DEPLOY_PATH }}/docker-compose.yml up -d --force-recreate
+            docker compose -f ${{ secrets.PI_DEPLOY_PATH }}/docker-compose.yml up -d --force-recreate
           "
