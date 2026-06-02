@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: jobplanetcrawler
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/jobplanet_crawler_db}
+    username: ${SPRING_DATASOURCE_USERNAME:jobplanet_crawler_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:jobplanet_crawler_password}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
