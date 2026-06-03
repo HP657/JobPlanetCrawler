@@ -25,8 +25,7 @@ services:
     restart: always
 
   api:
-#    image: ghcr.io/hp657/jobplanetcrawler/crawler:latest
-    build: .
+    image: ghcr.io/hp657/jobplanetcrawler/crawler:latest
     container_name: jobplanet-api-server
     ports:
       - "8080:8080"
