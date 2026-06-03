@@ -16,6 +16,14 @@ services:
         limits:
           memory: 512M
 
+  chrome:
+    image: seleniarm/standalone-chromium:latest
+    container_name: selenium-chrome
+    shm_size: '2gb'
+    ports:
+      - "4444:4444"
+    restart: always
+
   api:
     image: ghcr.io/hp657/jobplanetcrawler/crawler:latest
     container_name: jobplanet-api-server
@@ -25,11 +33,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/jobplanet_crawler_db
       SPRING_DATASOURCE_USERNAME: jobplanet_crawler_user
       SPRING_DATASOURCE_PASSWORD: jobplanet_crawler_password
+      # 추가: API 서버가 크롬 컨테이너로 접속할 주소
+      REMOTE_WEBDRIVER_URL: "http://chrome:4444/wd/hub"
     volumes:
       - ./backups:/app/backups
       - ./logs:/app/logs
     depends_on:
       - postgres-db
+      - chrome
     restart: always
     deploy:
       resources:
