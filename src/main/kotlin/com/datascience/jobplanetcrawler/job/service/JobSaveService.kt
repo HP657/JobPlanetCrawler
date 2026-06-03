@@ -23,39 +23,39 @@ class JobSaveService(
     fun saveScrapedJobs(jobDtos: List<JobScrapDto>) {
         if (jobDtos.isEmpty()) return
 
+        // [핵심 1] 모든 스킬을 메모리로 한 번에 로드 (캐시 역할)
+        val skillCache = skillRepository.findAll().associateBy { it.name }.toMutableMap()
+
         var newCount = 0
         var updateCount = 0
 
         for (dto in jobDtos) {
-            val existingJob = jobOpeningRepository.findByLinkAndTitle(dto.link, dto.title)
-
-            if (existingJob != null) {
-                // 기존에 존재하는 공고입니다. location, deadline 필드가 제거되어 별도의 업데이트는 수행하지 않습니다.
-                // 단순히 중복 저장을 방지하고 카운트만 합니다.
+            // [핵심 2] 이미 존재하는지 확인
+            if (jobOpeningRepository.existsByLinkAndTitle(dto.link, dto.title)) {
                 updateCount++
-            } else {
-                val newJobOpening = JobOpening(
-                    title = dto.title,
-                    companyName = dto.companyName,
-                    link = dto.link,
-                    experience = dto.experience
-                )
+                continue
+            }
 
-                dto.skills.forEach { skillName ->
-                    val skill = skillRepository.findByName(skillName)
-                        ?: skillRepository.save(Skill(name = skillName))
+            val newJobOpening = JobOpening(
+                title = dto.title,
+                companyName = dto.companyName,
+                link = dto.link,
+                experience = dto.experience
+            )
 
-                    val jobOpeningSkill = JobOpeningSkill(
-                        jobOpening = newJobOpening,
-                        skill = skill
-                    )
-                    newJobOpening.addSkill(jobOpeningSkill)
+            // [핵심 3] DB 대신 메모리 맵(skillCache)에서 스킬 ID 찾기
+            dto.skills.forEach { skillName ->
+                val skill = skillCache.getOrPut(skillName) {
+                    val savedSkill = skillRepository.save(Skill(name = skillName))
+                    savedSkill
                 }
 
-                jobOpeningRepository.save(newJobOpening)
-                newCount++
+                newJobOpening.addSkill(JobOpeningSkill(jobOpening = newJobOpening, skill = skill))
             }
+
+            jobOpeningRepository.save(newJobOpening)
+            newCount++
         }
-        log.info("💾 청크 저장 결과 -> 신규 등록: ${newCount}건, 기존 항목(중복): ${updateCount}건")
+        log.info("💾 저장 완료 -> 신규: $newCount, 중복: $updateCount")
     }
 }

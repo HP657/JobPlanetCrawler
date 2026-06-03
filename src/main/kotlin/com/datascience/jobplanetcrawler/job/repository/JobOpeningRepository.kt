@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface JobOpeningRepository : JpaRepository<JobOpening, Long> {
     fun findByLinkAndTitle(link: String, title: String): JobOpening?
+    fun existsByLinkAndTitle(link: String, title: String): Boolean
 }
