@@ -14,7 +14,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M # DB에 할당할 최대 메모리
+          memory: 512M
 
   api:
     image: ghcr.io/hp657/jobplanetcrawler/crawler:latest
@@ -22,17 +22,19 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # 컨테이너끼리 통신할 때는 내부 포트인 5432 사용
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/jobplanet_crawler_db
       SPRING_DATASOURCE_USERNAME: jobplanet_crawler_user
       SPRING_DATASOURCE_PASSWORD: jobplanet_crawler_password
+    volumes:
+      - ./backups:/app/backups
+      - ./logs:/app/logs
     depends_on:
       - postgres-db
     restart: always
     deploy:
       resources:
         limits:
-          memory: 1024m # 앱에 할당할 최대 메모리 (4GB 중 약 1.5GB만 사용)
+          memory: 1024m
 
 volumes:
   postgres_data:
