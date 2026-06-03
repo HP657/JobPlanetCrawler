@@ -25,7 +25,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.CR_PAT }} # CR_PAT을 사용하세요
+          password: ${{ secrets.CR_PAT }}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
@@ -50,19 +50,15 @@ jobs:
       - name: Add known hosts
         run: ssh-keyscan -H "${{ secrets.PI_HOST }}" >> ~/.ssh/known_hosts
 
-      - name: Copy docker-compose.yml to Raspberry Pi
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.PI_HOST }}
-          username: ${{ secrets.PI_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml"
-          target: ${{ secrets.PI_DEPLOY_PATH }}
-
       - name: Deploy to Raspberry Pi
         run: |
-          ssh ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "
+          # 1. SCP로 파일 전송 (애플보이 액션 대신 표준 명령어 사용)
+          scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }}:${{ secrets.PI_DEPLOY_PATH }}/
+          
+          # 2. SSH로 접속하여 도커 실행
+          ssh -o StrictHostKeyChecking=no ${{ secrets.PI_USER }}@${{ secrets.PI_HOST }} "
             cd ${{ secrets.PI_DEPLOY_PATH }} &&
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.CR_PAT }} &&
             docker compose pull &&
             docker compose up -d --force-recreate
           "
