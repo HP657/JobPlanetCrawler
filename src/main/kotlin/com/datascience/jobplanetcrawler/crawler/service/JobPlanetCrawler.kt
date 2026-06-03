@@ -21,23 +21,21 @@ class JobPlanetCrawler(private val jobSaveService: JobSaveService) {
 
     fun crawlDirectly() {
         val options = ChromeOptions().apply {
-            addArguments("--headless=new") // 필수: 화면 없이 실행
-            addArguments("--no-sandbox")   // 필수: 리눅스 컨테이너 환경
-            addArguments("--disable-dev-shm-usage") // 필수: 메모리 효율화
+            addArguments("--headless=new")
+            addArguments("--no-sandbox")
+            addArguments("--disable-dev-shm-usage")
             addArguments("--disable-gpu")
             addArguments("--window-size=1920,1080")
-            addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+            addArguments("--user-agent=Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 
-            val prefs = mapOf(
-                "profile.managed_default_content_settings.images" to 2,
-                "profile.managed_default_content_settings.stylesheets" to 2
-            )
-            setExperimentalOption("prefs", prefs)
-
-            setBinary("/usr/bin/chromium")
+            // 가장 핵심: 서버 환경에 맞는 브라우저 경로 지정
+            setBinary("/usr/bin/chromium-browser")
         }
 
+        // 드라이버 생성 시 명시적 경로 설정 추가
+        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver")
         val driver = ChromeDriver(options)
+
         val js = driver as JavascriptExecutor
         val batchBuffer = mutableListOf<JobScrapDto>()
         val processedLinks = mutableSetOf<String>()
