@@ -20,7 +20,6 @@ class JobPlanetCrawler(private val jobSaveService: JobSaveService) {
     }
 
     fun crawlDirectly() {
-        WebDriverManager.chromedriver().setup()
         val options = ChromeOptions().apply {
             addArguments("--headless=new") // 필수: 화면 없이 실행
             addArguments("--no-sandbox")   // 필수: 리눅스 컨테이너 환경
@@ -34,6 +33,8 @@ class JobPlanetCrawler(private val jobSaveService: JobSaveService) {
                 "profile.managed_default_content_settings.stylesheets" to 2
             )
             setExperimentalOption("prefs", prefs)
+
+            setBinary("/usr/bin/chromium")
         }
 
         val driver = ChromeDriver(options)
