@@ -10,10 +10,10 @@ RUN gradle build -x test --no-daemon
 FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-# [추가] 브라우저 및 의존성 라이브러리 설치
-RUN apt-get update && apt-get install -y \
-    chromium \
-    chromium-driver \
+# 패키지 업데이트 및 크롬 설치 (chromium-browser와 chromium-chromedriver 명칭 사용)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    chromium-browser \
+    chromium-chromedriver \
     libnss3 \
     libgconf-2-4 \
     libfontconfig1 \
