@@ -1,8 +1,10 @@
 package com.datascience.jobplanetcrawler.crawler.service
 
 import com.datascience.jobplanetcrawler.crawler.dto.JobScrapDto
+import com.datascience.jobplanetcrawler.job.service.JobReadService
 import com.datascience.jobplanetcrawler.job.service.JobSaveService
 import org.openqa.selenium.*
+import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
@@ -13,8 +15,9 @@ import org.springframework.stereotype.Service
 import java.net.URL
 import java.time.Duration
 
+
 @Service
-class JobPlanetCrawler(private val jobSaveService: JobSaveService) {
+class JobPlanetCrawler(private val jobSaveService: JobSaveService, private val jobReadService: JobReadService) {
 
     companion object {
         private val log = LoggerFactory.getLogger(JobPlanetCrawler::class.java)
@@ -162,7 +165,10 @@ class JobPlanetCrawler(private val jobSaveService: JobSaveService) {
                         continue
 
                     } catch (e: StaleElementReferenceException) {
-                        log.warn("[Crawler] stale element 발생, 카드 스킵")
+                        log.warn(
+                            "[Crawler] stale element 발생, 카드 스킵 (현재 수집 {}건)",
+                            processedLinks.size
+                        )
                         continue
                     }
                 }

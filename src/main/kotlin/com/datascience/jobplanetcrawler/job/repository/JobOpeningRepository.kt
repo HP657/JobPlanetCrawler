@@ -14,4 +14,6 @@ interface JobOpeningRepository : JpaRepository<JobOpening, Long> {
      */
     @Query("SELECT DISTINCT jo FROM JobOpening jo LEFT JOIN FETCH jo.jobOpeningSkills jos LEFT JOIN FETCH jos.skill")
     fun findAllWithSkills(): List<JobOpening>
+
+    fun findByLink(link: String): JobOpening?
 }

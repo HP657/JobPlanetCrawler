@@ -31,7 +31,8 @@ class JobSaveService(
 
         for (dto in jobDtos) {
             // [핵심 2] 이미 존재하는지 확인
-            val existingJobOpening = jobOpeningRepository.findByLinkAndTitle(dto.link, dto.title)
+//            val existingJobOpening = jobOpeningRepository.findByLinkAndTitle(dto.link, dto.title)
+            val existingJobOpening = jobOpeningRepository.findByLink(dto.link)
 
             if (existingJobOpening != null) {
                 // 이미 존재하면 updatedAt 필드만 업데이트
