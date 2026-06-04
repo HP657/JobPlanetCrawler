@@ -34,7 +34,7 @@ class BackupScheduler(
         log.info("🗄️ DB 전체 데이터 백업을 시작합니다.")
 
         try {
-            val jobOpenings = jobOpeningRepository.findAll()
+            val jobOpenings = jobOpeningRepository.findAllWithSkills()
             if (jobOpenings.isEmpty()) {
                 log.info("백업할 데이터가 없습니다.")
                 return
