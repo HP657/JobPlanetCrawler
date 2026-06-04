@@ -9,5 +9,6 @@ data class JobOpeningDto(
     val link: String,
     val experience: String,
     val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
     val skills: List<String>
 )

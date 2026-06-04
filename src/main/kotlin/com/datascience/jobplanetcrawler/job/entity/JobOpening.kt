@@ -25,7 +25,10 @@ class JobOpening(
     var experience: String? = null,
 
     @Column(nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now()
+    var createdAt: LocalDateTime = LocalDateTime.now(),
+
+    @Column(nullable = false)
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

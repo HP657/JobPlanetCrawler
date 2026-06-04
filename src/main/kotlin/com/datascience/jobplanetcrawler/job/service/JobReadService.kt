@@ -26,6 +26,7 @@ class JobReadService(
                 link = job.link,
                 experience = job.experience ?: "신입",
                 createdAt = job.createdAt,
+                updatedAt = job.updatedAt,
                 skills = job.jobOpeningSkills.map { it.skill.name }
             )
         }
