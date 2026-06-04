@@ -49,7 +49,7 @@ class BackupScheduler(
                     link = job.link,
                     experience = job.experience ?: "경력 무관",
                     createdAt = job.createdAt,
-                    // jobOpeningSkills 엔티티가 여기서 완전히 로드됨
+                    updatedAt = job.updatedAt,
                     skills = job.jobOpeningSkills.map { it.skill.name }
                 )
             }
