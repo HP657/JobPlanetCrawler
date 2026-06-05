@@ -48,17 +48,21 @@ class JobPlanetCrawler(private val jobSaveService: JobSaveService, private val j
 
         log.info("[Crawler] 원격 브라우저 연결 시도: $remoteUrl")
 
-        val driver = RemoteWebDriver(remoteUrl, options)
-        val wait = WebDriverWait(driver, Duration.ofSeconds(10))
-
-        val js = driver as JavascriptExecutor
+        var driver: RemoteWebDriver? = null
 
         val batchBuffer = mutableListOf<JobScrapDto>()
         val processedLinks = mutableSetOf<String>()
 
-        val BATCH_SIZE = 100
-
         try {
+
+            driver = RemoteWebDriver(remoteUrl, options)
+
+            val wait = WebDriverWait(driver, Duration.ofSeconds(10))
+
+            val js = driver as JavascriptExecutor
+
+            val BATCH_SIZE = 100
+
             driver.get("https://www.jobplanet.co.kr/job")
             Thread.sleep(3000)
 
@@ -245,7 +249,7 @@ class JobPlanetCrawler(private val jobSaveService: JobSaveService, private val j
         } finally {
 
             try {
-                driver.quit()
+                driver?.quit()
                 log.info("[Crawler] 드라이버 종료.")
             } catch (e: Exception) {
                 log.warn("[Crawler] 드라이버 종료 실패", e)
