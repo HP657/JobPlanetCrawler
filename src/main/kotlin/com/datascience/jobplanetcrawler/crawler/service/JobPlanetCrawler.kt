@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.net.URL
 import java.time.Duration
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 @Service
@@ -23,8 +24,16 @@ class JobPlanetCrawler(private val jobSaveService: JobSaveService, private val j
         private val log = LoggerFactory.getLogger(JobPlanetCrawler::class.java)
     }
 
+    private val isRunning = AtomicBoolean(false)
+
     @Async
     fun crawlDirectly() {
+
+        if (!isRunning.compareAndSet(false, true)) {
+            log.info("[Crawler] 이미 크롤링 실행 중입니다.")
+            return
+        }
+
         val options = ChromeOptions().apply {
             addArguments("--headless=new")
             addArguments("--no-sandbox")
@@ -234,8 +243,16 @@ class JobPlanetCrawler(private val jobSaveService: JobSaveService, private val j
             }
 
         } finally {
-            driver.quit()
-            log.info("[Crawler] 드라이버 종료.")
+
+            try {
+                driver.quit()
+                log.info("[Crawler] 드라이버 종료.")
+            } catch (e: Exception) {
+                log.warn("[Crawler] 드라이버 종료 실패", e)
+            }
+
+            isRunning.set(false)
+            log.info("[Crawler] 실행 플래그 해제")
         }
     }
 }
